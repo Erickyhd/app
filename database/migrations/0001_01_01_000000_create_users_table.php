@@ -1,0 +1,57 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('usuarios', function (Blueprint $table) {
+            $table->id();
+            $table->string('dni')->unique()->nullable();
+            $table->string('nombres');
+            $table->string('apellidos')->nullable();
+            $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password');
+            $table->string('telefono')->nullable();
+            $table->string('genero')->nullable();
+            $table->text('foto')->nullable();
+            $table->timestamp('ultimo_login_at')->nullable();
+            $table->unsignedBigInteger('jerarquia_id')->nullable();
+            $table->unsignedBigInteger('rango_id')->nullable();
+            $table->rememberToken();
+            $table->auditoria();
+        });
+
+        Schema::create('tokens_reinicio_clave', function (Blueprint $table) {
+            $table->string('email')->primary();
+            $table->string('token');
+            $table->timestamp('creado_en')->nullable();
+        });
+
+        Schema::create('sessions', function (Blueprint $table) {
+            $table->string('id')->primary();
+            $table->foreignId('user_id')->nullable()->index();
+            $table->string('ip_address', 45)->nullable();
+            $table->text('user_agent')->nullable();
+            $table->longText('payload');
+            $table->integer('last_activity')->index();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('usuarios');
+        Schema::dropIfExists('tokens_reinicio_clave');
+        Schema::dropIfExists('sessions');
+    }
+};
