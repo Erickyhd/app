@@ -23,6 +23,14 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/{id}', [UserController::class, 'update']);
         Route::delete('/{id}', [UserController::class, 'destroy']);
     });
+
+    // ROLES Y PERMISOS
+    Route::prefix('roles-permisos')->group(function () {
+        Route::get('/roles', [\App\Modules\Users\Infrastructure\Http\Controllers\RolePermissionController::class, 'getRoles'])->middleware('permission:roles.ver');
+        Route::get('/permisos', [\App\Modules\Users\Infrastructure\Http\Controllers\RolePermissionController::class, 'getPermissions'])->middleware('permission:roles.ver');
+        Route::get('/usuarios/{id}', [\App\Modules\Users\Infrastructure\Http\Controllers\RolePermissionController::class, 'getUserPermissions'])->middleware('permission:roles.ver');
+        Route::post('/usuarios/{id}/sync', [\App\Modules\Users\Infrastructure\Http\Controllers\RolePermissionController::class, 'syncUserPermissions'])->middleware('permission:roles.editar');
+    });
     
     // JERARQUIAS
     Route::prefix('jerarquias')->group(function () {

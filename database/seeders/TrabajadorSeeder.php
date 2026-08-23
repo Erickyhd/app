@@ -10,7 +10,7 @@ class TrabajadorSeeder extends Seeder
     public function run(): void
     {
         DB::table('trabajadores')->insert([
-            'user_id' => 1,
+            'usuario_id' => 1,
             'tipo_documento' => 'DNI',
             'numero_documento' => '12345678',
             'nombres' => 'Super',
@@ -21,6 +21,7 @@ class TrabajadorSeeder extends Seeder
             'direccion' => 'Av. Principal 123',
             'fecha_contratacion' => '2026-01-01',
             'estado' => 1,
+            'usuario_creacion_id' => 1,
             'created_at' => now(),
             'updated_at' => now(),
         ]);

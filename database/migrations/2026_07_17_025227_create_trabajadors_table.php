@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('trabajadores', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->nullable()->unique();
+            $table->unsignedBigInteger('usuario_id')->nullable()->unique();
             $table->string('tipo_documento');
             $table->string('numero_documento')->unique();
             $table->string('nombres');

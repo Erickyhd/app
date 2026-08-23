@@ -2,10 +2,19 @@
 import { ref, computed } from 'vue';
 import { useAuthStore } from '../store/authStore';
 import { useRouter } from 'vue-router';
+import { usePermissions } from '../modules/Auth/composables/usePermissions';
 
 const authStore = useAuthStore();
 const router = useRouter();
+const { can, hasRole } = usePermissions();
 const isSidebarOpen = ref(true);
+
+const openMenus = ref({
+    'Módulo de Usuarios': false,
+    'Módulo de Clientes': false,
+    'Reportes': false,
+    'Configuración': false
+});
 
 const user = computed(() => authStore.user);
 
@@ -14,52 +23,59 @@ const handleLogout = async () => {
     router.push({ name: 'Login' });
 };
 
-const navigation = ref([
-    { name: 'Dashboard', icon: 'mdi-view-dashboard-outline', to: '/' },
-    { 
-        name: 'Módulo de Usuarios', 
-        icon: 'mdi-account-group-outline',
-        isOpen: false,
-        children: [
-            { name: 'Usuarios', to: '/usuarios', icon: 'mdi-account-outline' },
-            { name: 'Roles y Permisos', to: '/roles', icon: 'mdi-shield-account-outline' },
-            { name: 'Jerarquías', to: '/jerarquias', icon: 'mdi-sitemap' },
-            { name: 'Rangos', to: '/rangos', icon: 'mdi-star-outline' },
-            { name: 'Trabajadores', to: '/trabajadores', icon: 'mdi-briefcase-outline' },
-        ]
-    },
-    { 
-        name: 'Módulo de Clientes', 
-        icon: 'mdi-briefcase-account-outline',
-        isOpen: false,
-        children: [
-            { name: 'Directorio', to: '/clientes', icon: 'mdi-contacts-outline' }
-        ]
-    },
-    { 
-        name: 'Reportes', 
-        icon: 'mdi-chart-box-outline',
-        isOpen: false,
-        children: [
-            { name: 'General', to: '/reportes', icon: 'mdi-chart-bar' }
-        ]
-    },
-    { 
-        name: 'Configuración', 
-        icon: 'mdi-cog-outline',
-        isOpen: false,
-        children: [
-            { name: 'Sistema', to: '/configuracion', icon: 'mdi-cogs' }
-        ]
-    },
-]);
+// Navegación computada filtrada por permisos
+const navigation = computed(() => {
+    return [
+        { name: 'Dashboard', icon: 'mdi-view-dashboard-outline', to: '/', show: true },
+        { 
+            name: 'Módulo Administrativo', 
+            icon: 'mdi-account-group-outline',
+            isOpen: openMenus.value['Módulo de Usuarios'],
+            show: can('usuarios.ver') || can('jerarquias.ver') || can('rangos.ver') || can('trabajadores.ver') || can('roles.ver'),
+            children: [
+                { name: 'Usuarios', to: '/usuarios', icon: 'mdi-account-outline', show: can('usuarios.ver') },
+                { name: 'Roles y Permisos', to: '/roles', icon: 'mdi-shield-account-outline', show: can('roles.ver') },
+                { name: 'Jerarquías', to: '/jerarquias', icon: 'mdi-sitemap', show: can('jerarquias.ver') },
+                { name: 'Rangos', to: '/rangos', icon: 'mdi-star-outline', show: can('rangos.ver') },
+                { name: 'Trabajadores', to: '/trabajadores', icon: 'mdi-briefcase-outline', show: can('trabajadores.ver') },
+            ].filter(child => child.show)
+        },
+        { 
+            name: 'Módulo de Clientes', 
+            icon: 'mdi-briefcase-account-outline',
+            isOpen: openMenus.value['Módulo de Clientes'],
+            show: can('clientes.ver'),
+            children: [
+                { name: 'Directorio', to: '/clientes', icon: 'mdi-contacts-outline', show: can('clientes.ver') }
+            ].filter(child => child.show)
+        },
+        { 
+            name: 'Reportes', 
+            icon: 'mdi-chart-box-outline',
+            isOpen: openMenus.value['Reportes'],
+            show: can('reportes.ver'),
+            children: [
+                { name: 'General', to: '/reportes', icon: 'mdi-chart-bar', show: can('reportes.ver') }
+            ].filter(child => child.show)
+        },
+        { 
+            name: 'Configuración', 
+            icon: 'mdi-cog-outline',
+            isOpen: openMenus.value['Configuración'],
+            show: can('configuracion.ver'),
+            children: [
+                { name: 'Sistema', to: '/configuracion', icon: 'mdi-cogs', show: can('configuracion.ver') }
+            ].filter(child => child.show)
+        },
+    ].filter(item => item.show && (!item.children || item.children.length > 0));
+});
 
 const toggleMenu = (item) => {
     if (item.children) {
         if (!isSidebarOpen.value) {
             isSidebarOpen.value = true;
         }
-        item.isOpen = !item.isOpen;
+        openMenus.value[item.name] = !openMenus.value[item.name];
     } else {
         router.push(item.to);
     }

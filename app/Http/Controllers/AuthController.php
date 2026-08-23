@@ -16,7 +16,12 @@ class AuthController extends Controller
 
         if (Auth::attempt(['email' => $credentials['email'], 'password' => $credentials['password']])) {
             $request->session()->regenerate();
-            return response()->json(['user' => Auth::user()]);
+            $user = Auth::user();
+            return response()->json([
+                'user' => $user,
+                'roles' => $user->roles->pluck('name'),
+                'permissions' => $user->getAllPermissions()->pluck('name')
+            ]);
         }
 
         return response()->json([
@@ -34,6 +39,12 @@ class AuthController extends Controller
 
     public function user(Request $request)
     {
-        return response()->json($request->user());
+        $user = $request->user();
+        
+        return response()->json([
+            'user' => $user,
+            'roles' => $user->roles->pluck('name'),
+            'permissions' => $user->getAllPermissions()->pluck('name')
+        ]);
     }
 }

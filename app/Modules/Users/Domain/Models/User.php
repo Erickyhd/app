@@ -17,13 +17,8 @@ class User extends Authenticatable
     protected $table = 'usuarios';
 
     protected $fillable = [
-        'dni',
-        'nombres',
-        'apellidos',
         'email',
         'password',
-        'telefono',
-        'genero',
         'foto',
         'ultimo_login_at',
         'jerarquia_id',
@@ -62,5 +57,10 @@ class User extends Authenticatable
     public function rango()
     {
         return $this->belongsTo(Rango::class, 'rango_id');
+    }
+
+    public function trabajador()
+    {
+        return $this->hasOne(\App\Modules\Trabajadores\Domain\Models\Trabajador::class, 'usuario_id');
     }
 }

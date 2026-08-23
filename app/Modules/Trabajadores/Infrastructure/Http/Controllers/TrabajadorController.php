@@ -14,7 +14,7 @@ class TrabajadorController extends Controller
     public function index()
     {
         try {
-            $trabajadores = Trabajador::with('user')->get();
+            $trabajadores = Trabajador::with('usuario')->get();
             return response()->json([
                 'success' => true,
                 'data' => $trabajadores,
@@ -33,7 +33,7 @@ class TrabajadorController extends Controller
     {
         try {
             $data = $request->validate([
-                'user_id' => 'nullable|exists:usuarios,id|unique:trabajadores,user_id',
+                'usuario_id' => 'nullable|exists:usuarios,id|unique:trabajadores,usuario_id',
                 'tipo_documento' => 'required|string',
                 'numero_documento' => 'required|string|unique:trabajadores,numero_documento',
                 'nombres' => 'required|string|max:255',
@@ -72,7 +72,7 @@ class TrabajadorController extends Controller
     public function show($id)
     {
         try {
-            $trabajador = Trabajador::with('user')->findOrFail($id);
+            $trabajador = Trabajador::with('usuario')->findOrFail($id);
             return response()->json([
                 'success' => true,
                 'data' => $trabajador,
@@ -93,7 +93,7 @@ class TrabajadorController extends Controller
             $trabajador = Trabajador::findOrFail($id);
 
             $data = $request->validate([
-                'user_id' => 'nullable|exists:usuarios,id|unique:trabajadores,user_id,'.$id,
+                'usuario_id' => 'nullable|exists:usuarios,id|unique:trabajadores,usuario_id,'.$id,
                 'tipo_documento' => 'sometimes|required|string',
                 'numero_documento' => 'sometimes|required|string|unique:trabajadores,numero_documento,'.$id,
                 'nombres' => 'sometimes|required|string|max:255',

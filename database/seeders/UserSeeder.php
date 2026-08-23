@@ -10,19 +10,16 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        DB::table('usuarios')->insert([
-            'dni' => '12345678',
-            'nombres' => 'Administrator',
-            'apellidos' => 'Admin',
+        $user = \App\Modules\Users\Domain\Models\User::create([
             'email' => 'admin@app.com',
             'password' => Hash::make('password'),
-            'telefono' => '999888777',
-            'genero' => 'M',
             'jerarquia_id' => 1, // Gerencia General
             'rango_id' => 1, // Gerente
             'estado' => 1,
-            'created_at' => now(),
-            'updated_at' => now(),
+            'usuario_creacion_id' => 1,
         ]);
+
+        // Asignar el rol de Gerente General (que tiene todos los permisos)
+        $user->assignRole('Gerente General');
     }
 }

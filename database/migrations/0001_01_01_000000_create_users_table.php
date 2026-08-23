@@ -13,14 +13,9 @@ return new class extends Migration
     {
         Schema::create('usuarios', function (Blueprint $table) {
             $table->id();
-            $table->string('dni')->unique()->nullable();
-            $table->string('nombres');
-            $table->string('apellidos')->nullable();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('telefono')->nullable();
-            $table->string('genero')->nullable();
             $table->text('foto')->nullable();
             $table->timestamp('ultimo_login_at')->nullable();
             $table->unsignedBigInteger('jerarquia_id')->nullable();

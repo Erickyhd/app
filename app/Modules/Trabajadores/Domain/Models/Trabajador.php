@@ -11,7 +11,7 @@ class Trabajador extends Model
     protected $table = 'trabajadores';
     
     protected $fillable = [
-        'user_id',
+        'usuario_id',
         'tipo_documento',
         'numero_documento',
         'nombres',
@@ -33,9 +33,9 @@ class Trabajador extends Model
         });
     }
 
-    public function user()
+    public function usuario()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'usuario_id');
     }
 
     public function creador()

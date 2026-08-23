@@ -36,8 +36,11 @@ class JerarquiaController extends Controller
                 'nombre' => 'required|string|max:255',
                 'descripcion' => 'nullable|string',
                 'jerarquia_padre_id' => 'nullable|exists:jerarquias,id',
-                'codigo' => 'nullable|string|max:50',
             ]);
+
+            // Generar código automático: 001, 002, 003...
+            $lastId = Jerarquia::max('id') ?? 0;
+            $data['codigo'] = str_pad($lastId + 1, 3, '0', STR_PAD_LEFT);
 
             $data['usuario_creacion_id'] = Auth::id() ?? 1; // Fallback to 1 for testing if not logged in
 

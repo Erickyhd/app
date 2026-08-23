@@ -17,7 +17,7 @@ return new class extends Migration
         });
         
         Schema::table('trabajadores', function (Blueprint $table) {
-            $table->foreign('user_id')->references('id')->on('usuarios')->onDelete('set null');
+            $table->foreign('usuario_id')->references('id')->on('usuarios')->onDelete('set null');
         });
     }
 
@@ -32,7 +32,7 @@ return new class extends Migration
         });
         
         Schema::table('trabajadores', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
+            $table->dropForeign(['usuario_id']);
         });
     }
 };
